@@ -1,55 +1,48 @@
-from pulp import *
+from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
 
-#Dados do problema
-maquinas = [0,1,2]
+# Problem data
+machines = [0, 1, 2]
 
-fixo = {0:25,
-        1:45,
-        2:60}
+fixed_cost = {0: 25,
+              1: 45,
+              2: 60}
 
-variavel = {0:4,
-            1:7,
-            2:12}
+variable_cost = {0: 4,
+                 1: 7,
+                 2: 12}
 
-capacidade ={ 0: 30,
-             1:60,
-             2:78}
+availability = {0: 30,
+                1: 60,
+                2: 78}
 
-#Criação das variáveis de decisão
-var = LpVariable.dict("X",(maquinas),cat = 'Integer',lowBound = 0)
-var2 = LpVariable.dict("Y",(maquinas),cat = 'Binary')
+# Decision variables
+var = LpVariable.dict("X", machines, cat='Integer', lowBound=0)
+var2 = LpVariable.dict("Y", machines, cat='Binary')
 
-#Criação do model
+# Model
+model = LpProblem("fixed_load", LpMinimize)
 
-model = LpProblem("Carga_Fixa",LpMinimize)
-#Criação da função objetivo
-lista_fo = []
+# Goal function
+model += lpSum(var[i] * variable_cost[i] + var2[i] * fixed_cost[i] for i in machines)
 
-for i in maquinas:
-    lista_fo.append(var[i]*variavel[i] + var2[i]*fixo[i])
-
-model+= lpSum(lista_fo)
-
-#Criação das restrições
-
-for i in maquinas:
-    model += var[i] <= capacidade[i]*var2[i]
+# Constrains
+for i in machines:
+    model += var[i] <= availability[i] * var2[i]
     
-lista_rest = []
+constrains_list = []
 for x in var.values():
-    lista_rest.append(x)
+    constrains_list.append(x)
     
-model += lpSum(lista_rest) == 75
+model += lpSum(constrains_list) == 75
     
-#Solução do modelo
-
+# Model solution
 status = model.solve()
 print(LpStatus[status])
 print(" ")
-print(f'O custo é de {value(model.objective)}')
+print(f'The cost is: {value(model.objective)}')
 print(" ")
 
-for i in maquinas:
+for i in machines:
     print(f'{var[i]} = {value(var[i])}')
     print(f'{var2[i]} = {value(var2[i])}')
 

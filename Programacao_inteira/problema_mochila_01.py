@@ -1,52 +1,40 @@
-# importar o pulp
-from pulp import *
+from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
 
-# Criar dados do problema
+# Problem data
+items = ['MS1', 'MS2', 'MS3', 'MS4', 'MS5', 'MS6']
 
-itens = ['MS1','MS2','MS3','MS4','MS5','MS6']
+availability = 20000
+weight = {'MS1': 7000,
+          'MS2': 4500,
+          'MS3': 8700,
+          'MS4': 8000,
+          'MS5': 4900,
+          'MS6': 7500}
 
-capacidade = 20000
-peso = {'MS1':7000,
-        'MS2':4500,
-        'MS3':8700,
-        'MS4':8000,
-        'MS5':4900,
-        'MS6':7500}
+item_value = {'MS1': 36,
+              'MS2': 64,
+              'MS3': 40,
+              'MS4': 45,
+              'MS5': 60,
+              'MS6': 40}
 
-valor ={'MS1':36,
-        'MS2':64,
-        'MS3':40,
-        'MS4':45,
-        'MS5':60,
-        'MS6':40}
+# Decision variables
+var = LpVariable.dict("", items, cat='Binary')
 
-# Criar as variáveis de decisão
-var = LpVariable.dict("",(itens),cat = 'Binary')
+# Model
+model = LpProblem("Backpack_problem", LpMaximize)
 
-# Criar o Problema
-model = LpProblem("Problema_mochila_01",LpMaximize)
-# Criar fo
-lista_fo =[]
+# Goal function
+model += lpSum(var[item] * item_value[item] for item in items)
 
-for item in itens:
-    lista_fo.append(var[item] * valor[item])
+# Constrains
+model += lpSum(var[item] * weight[item] for item in items) <= availability
 
-model += lpSum(lista_fo)
-
-
-# Criar restrições
-lista_rest = []
-
-for item in itens:
-    lista_rest.append(var[item]*peso[item])
-    
-model += lpSum(lista_rest) <= capacidade
-
-# Solução do modelo
+# Model solution
 print(model)
 status = model.solve()
 print(LpStatus[status])
-print(f'O valor total da fo é {value(model.objective)}')
+print(f'Objective value: {value(model.objective)}')
 print(" ")
 
 for x in var.values():
