@@ -30,4 +30,26 @@ model += lpSum(var[x] * margin[x] for x in product_sales) - slag_price * \
 
 # Constrains
 model += var[0] + var[1] <= limit_manufacture
+model += var[2] <= clinker_sales
+model += composition[0][0] * var[0] + composition[0][1] * var[1] + var[2] <= limit_manufacture
+model += composition[1][0] * var[0] + composition[1][1] * var[1] <= slag_orders
+model += composition[2][0] * var[0] + composition[2][1] * var[1] <= plaster_orders
+model += composition[3][0] * var[0] + composition[3][1] * var[1] <= plaster_orders
+
 print(model)
+
+# Solving problem
+status = model.solve()
+
+# Printing results
+print(f" *** Best configuration - {LpStatus[status]} *** ")
+print('-------------------------------------')
+
+for x in var.values():
+    if value(x) != 0:
+        print(f'{x.name} = {value(x)} ')
+    else:
+        continue
+
+print('-------------------------------------')
+print(f'The {LpStatus[status]} profit is: R$ {round(value(model.objective), 2)}')

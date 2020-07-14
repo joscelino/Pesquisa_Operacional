@@ -1,87 +1,81 @@
+from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
 
-#Problema do Fluxo Máximo
+# Problem data
+nodes = [0, 1, 2, 3, 4]
+source = 0
+destination = 4
 
-from pulp import *
+fork = [[0, 1, 1, 1, 0],
+        [0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 1],
+        [0, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0]]
 
-# Dados do problema
+availabilities = [[0, 200, 300, 100, 0],
+                  [0, 0, 400, 0, 300],
+                  [0, 0, 0, 100, 200],
+                  [0, 0, 50, 0, 200],
+                  [0, 0, 0, 0, 0]]
 
-nos =  [0,1,2,3,4]
-no_origem = 0
-no_destino = 4
-
-grafo = [[0,1,1,1,0],
-         [0,0,1,0,1],
-         [0,0,0,1,1],
-         [0,0,1,0,1],
-         [0,0,0,0,0]]
-
-capacidade = [[0,200,300,100,0],
-              [0,0,400,0,300],
-              [0,0,0,100,200],
-              [0,0,50,0,200],
-              [0,0,0,0,0]]
-
-# Criação das variaveis de decisão
+# Decision variables
 var = {}
-for i in nos:
-    for j in nos:
-        if grafo[i][j]==1:
-            var[(i,j)]= LpVariable(name = f'x{i}{j}',lowBound = 0, cat = 'Integer')
+for i in nodes:
+    for j in nodes:
+        if fork[i][j]==1:
+            var[(i,j)]= LpVariable(name=f'x{i}{j}', lowBound=0, cat='Integer')
         else:
             continue
     var.update(var)
 
+# Model
+model = LpProblem("Maximum_flow_problem", LpMaximize)
 
-# Criação do modelo
-model = LpProblem("Problema_fluxo_máximo",LpMaximize)
-# Criação da fo
-lista_fo = []
+# Goal function
+goal_function = []
 for x in var.keys(): 
-    if x[0]==no_origem:
-        lista_fo.append(var[x])
+    if x[0] == source:
+        goal_function.append(var[x])
 
-model += lpSum(lista_fo)
+model += lpSum(goal_function)
 
-# Criação das restrições
-lista_o =[]
-lista_d =[]
+# Constrains
+constrains_o = []
+constrains_d = []
 
-for no in nos:
+for node in nodes:
     for x in var.keys():
         
-        if no == x[0]:
-            lista_o.append(var[x])
-        elif no == x[1]:
-            lista_d.append(var[x])
+        if node == x[0]:
+            constrains_o.append(var[x])
+        elif node == x[1]:
+            constrains_d.append(var[x])
         else:
             continue
 
-    if no == no_destino or no== no_origem:
+    if node == destination or node == source:
         None
     else:
-        model += lpSum(lista_o) - lpSum(lista_d)==0
+        model += lpSum(constrains_o) - lpSum(constrains_d) == 0
     
-    lista_o = []
-    lista_d = []
+    constrains_o = []
+    constrains_d = []
 
 for x in var.keys():
-    model += var[x] <= capacidade[x[0]][x[1]]
+    model += var[x] <= availabilities[x[0]][x[1]]
 
 print(model)
     
-# Solução do modelo
-
+# Model solution
 status = model.solve()
-print(LpStatus[status])
-print( " ")
+
+# Printing results
+print(f" *** Best configuration - {LpStatus[status]} *** ")
+print('-------------------------------------')
 print(f'A quantidade total é de {value(model.objective)}')
 print(" ")
 for x in var.values():
     print(f'{x} = {value(x)}')
 
-
-
-print(var.keys())
 
 
 

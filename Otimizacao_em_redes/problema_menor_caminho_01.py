@@ -1,87 +1,74 @@
-# Problema do Caminho MÃ­nimo
-# Importando o Pulp
-from pulp import *
+from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
 
-# Dados do Problema
+# Problem data
+nodes = [0, 1, 2, 3, 4]
+source = 0
+destination = 1
+fork = [[0, 1, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 1, 1],
+        [0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0]]
 
-n_nos =  [0,1,2,3,4]
-no_origem = 0
-no_destino = 1
-grafo = [[0,1,1,0,0],
-         [0,0,1,0,0],
-         [0,0,0,1,1],
-         [0,1,0,0,1],
-         [0,0,0,0,0]]
+costs = [[0, 300, 90, 0, 0],
+         [0, 0, 60, 0, 0],
+         [0, 0, 0, 30, 180],
+         [0, 45, 0, 0, 150],
+         [0, 0, 0, 0, 0]]
 
-custos = [[0,300,90,0,0],
-          [0,0,60,0,0],
-          [0,0,0,30,180],
-          [0,45,0,0,150],
-          [0,0,0,0,0]]
-
-# Criação das variaveis de decisão
+# Decision variables
 var = {}
-for i in n_nos:
-    for j in n_nos:
-        if grafo[i][j] == 1:
-            var[(i,j)] = LpVariable(name=f'x{i}{j}', cat = 'Binary')
+for i in nodes:
+    for j in nodes:
+        if fork[i][j] == 1:
+            var[(i, j)] = LpVariable(name=f'x{i}{j}', cat='Binary')
         else:
             continue
     var.update(var)
 
-# Criação do modelo
-model = LpProblem('Problema_menor_caminho', LpMinimize)
-# Criação da fo
-lista_fo = []
+# Model
+model = LpProblem('Shortest_path_problem', LpMinimize)
 
-for x in var.keys():
-    lista_fo.append(var[x]*custos[x[0]][x[1]])
-
-model += lpSum(lista_fo)
+# Goal function
+model += lpSum(var[x] * costs[x[0]][x[1]] for x in var.keys())
     
-# Criação das restrições
-lista_o = []
-lista_f = []
+# Constrains
+constrains_o = []
+constrains_f = []
 
-
-
-for no in n_nos:
-    for aresta in var.keys():
+for node in nodes:
+    for edge in var.keys():
         
-        if aresta[0] == no: 
-            lista_o.append(var[aresta])
+        if edge[0] == node:
+            constrains_o.append(var[edge])
             
-        if aresta[1] == no :
-            lista_f.append(var[aresta])
+        if edge[1] == node:
+            constrains_f.append(var[edge])
             
-    if no == no_origem:
-        model += lpSum(lista_o) == 1
-    elif no == no_destino:
-        model += lpSum(lista_f)== 1
+    if node == source:
+        model += lpSum(constrains_o) == 1
+    elif node == destination:
+        model += lpSum(constrains_f) == 1
     else:
-        model += lpSum(lista_o) - lpSum(lista_f) == 0
+        model += lpSum(constrains_o) - lpSum(constrains_f) == 0
     
-    lista_o = []
-    lista_f = []
-
-
+    constrains_o = []
+    constrains_f = []
 
 print(model)
 
-# Solução do modelo
-
+# Model solution
 status = model.solve()
-print(LpStatus[status])
-print(" ")
-print(f'O custo é de R${value(model.objective)}')
+
+
+# Printing results
+print(f" *** Best configuration - {LpStatus[status]} *** ")
+print('-------------------------------------')
+print(f'The cost is $: {value(model.objective)}')
 print(" ")
 
 for x in var.values():
-     if value(x) == 1:
-         print(f'{x} = {value(x)}')
-     else:
+    if value(x) == 1:
+        print(f'{x} = {value(x)}')
+    else:
         continue
-    
-    
-    
-    
