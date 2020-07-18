@@ -1,49 +1,48 @@
-from pulp import *
+from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
 
-# Dados do problema
+# Problem data
 capital = 1000000
-investimentos = [0,1,2,3,4]
+investments = [0, 1, 2, 3, 4]
 
 
-juros = {0:0.020,
-         1:0.030,
-         2:0.025,
-         3:0.032,
-         4:0.005}
+interest = {0: 0.020,
+            1: 0.030,
+            2: 0.025,
+            3: 0.032,
+            4: 0.005}
 
-risco = {0:0.03,
-         1:0.08,
-         2:0.10,
-         3:0.13,
-         4:0.01}
+risk = {0: 0.03,
+        1: 0.08,
+        2: 0.10,
+        3: 0.13,
+        4: 0.01}
 
-# Criar as var_decisão
-var = LpVariable.dict("E",(investimentos),lowBound = 70000,upBound = 599999.99)
+# Decision variables
+var = LpVariable.dict("E", investments, lowBound=75000, upBound=500000.00)
 
-# Criar o modelo
-model = LpProblem("Problema_investimento",LpMaximize)
-#criar a função objetivo
-lista_fo = []
+# Model
+model = LpProblem("Investment_problem", LpMaximize)
 
-for x in var.keys():
-    lista_fo.append(juros[x]*(1-risco[x])*var[x])
+# Goal function
+model += lpSum(interest[x] * (1 - risk[x]) * var[x] for x in var.keys())
 
-model += lpSum(lista_fo)
-
-
-#criar as restrições
-lista_rest = []
+# Constrains
+constrains_list = []
 
 for x in var.values():
-    lista_rest.append(x)
+    constrains_list.append(x)
     
-model += lpSum(lista_rest) <= capital
+model += lpSum(constrains_list) <= capital
 print(model)
-#Solução do modelo
-status = model.solve()
+
+# Model solution
+status: int = model.solve()
 print(LpStatus[status])
-print (f'O lucro foi de R${value(model.objective)}')
-print(" ")
+
+# Printing results
+print(f" *** Best configuration - {LpStatus[status]} *** ")
+print('-------------------------------------')
+print(f'Profit: ${value(model.objective)}')
 
 for x in var.values():
     print(f'{x} = {value(x)}')

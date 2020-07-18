@@ -1,22 +1,22 @@
 from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
-import numpy as np
+from typing import List, Dict
 
 # Problem data
-product_manufactured = {0: 'CP320', 1: 'AF250'}
-product_sales = {0: 'CP320', 1: 'AF250', 2: 'clinker'}
-components = {0: 'clinker', 1: 'slag', 2: 'plaster', 3: 'additive'}
-composition = [[0.85, 0.50],
-               [0.07, 0.45],
-               [0.03, 0.03],
-               [0.05, 0.02]]
-limit_manufacture = 1100000
-clinker_sales = 200000
-slag_orders = 180000
-plaster_orders = 50000
-margin = np.array([41.00, 37.80, 34.40])
-slag_price = 22.10
-plaster_price = 34.20
-additive_price = 1.90
+product_manufactured: Dict = {0: 'CP320', 1: 'AF250'}
+product_sales: Dict = {0: 'CP320', 1: 'AF250', 2: 'clinker'}
+components: Dict = {0: 'clinker', 1: 'slag', 2: 'plaster', 3: 'additive'}
+composition: List = [[0.85, 0.50],
+                     [0.07, 0.45],
+                     [0.03, 0.03],
+                     [0.05, 0.02]]
+limit_manufacture: int = 1100000
+clinker_sales: int = 200000
+slag_orders: int = 180000
+plaster_orders: int = 50000
+margin: List = [41.00, 37.80, 34.40]
+slag_price: float = 22.10
+plaster_price: float = 34.20
+additive_price: float = 1.90
 
 # Model and variables
 model = LpProblem('Cement_production', LpMaximize)
@@ -29,17 +29,17 @@ model += lpSum(var[x] * margin[x] for x in product_sales) - slag_price * \
          lpSum((var[x] * composition[3][x] for x in product_manufactured))
 
 # Constrains
-model += var[0] + var[1] <= limit_manufacture
 model += var[2] <= clinker_sales
-model += composition[0][0] * var[0] + composition[0][1] * var[1] + var[2] <= limit_manufacture
-model += composition[1][0] * var[0] + composition[1][1] * var[1] <= slag_orders
-model += composition[2][0] * var[0] + composition[2][1] * var[1] <= plaster_orders
-model += composition[3][0] * var[0] + composition[3][1] * var[1] <= plaster_orders
+model += lpSum(var[x] for x in product_manufactured) <= limit_manufacture
+model += lpSum(composition[0][x] * var[x] for x in product_manufactured) + var[2] <= limit_manufacture
+model += lpSum(composition[1][x] * var[x] for x in product_manufactured) <= slag_orders
+model += lpSum(composition[2][x] * var[x] for x in product_manufactured) <= plaster_orders
+model += lpSum(composition[3][x] * var[x] for x in product_manufactured) <= plaster_orders
 
 print(model)
 
 # Solving problem
-status = model.solve()
+status: int = model.solve()
 
 # Printing results
 print(f" *** Best configuration - {LpStatus[status]} *** ")

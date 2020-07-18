@@ -1,16 +1,17 @@
 from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
+from typing import List, Dict
 import numpy as np
 
 # Problem Data
-components = {0: 'pure_gas', 1: 'octane', 2: 'additive'}
+components: Dict = {0: 'pure_gas', 1: 'octane', 2: 'additive'}
 availabilities = np.array([9600000, 4800000, 2200000])
-gas_types = {0: 'green_gas', 1: 'blue_gas', 2: 'common_gas'}
-composition = [[0.22, 0.50, 0.28],
-               [0.52, 0.34, 0.14],
-               [0.74, 0.20, 0.06]]
+gas_types: Dict = {0: 'green_gas', 1: 'blue_gas', 2: 'common_gas'}
+composition: List = [[0.22, 0.50, 0.28],
+                    [0.52, 0.34, 0.14],
+                    [0.74, 0.20, 0.06]]
 contribution_margin = np.array([0.30, 0.25, 0.20])
-limit_blue_gas = 600000
-min_common_gas = 16 # times more than green gas
+limit_blue_gas: int = 600000
+min_common_gas: int = 16 # times more than green gas
 
 # Model and variables
 model = LpProblem('Mix_gas', LpMaximize)
@@ -32,7 +33,7 @@ model += lpSum(var[1]) <= limit_blue_gas
 print(model)
 
 # Solving problem
-status = model.solve()
+status: int = model.solve()
 
 # Printing results
 print(f" *** Best configuration - {LpStatus[status]} *** ")

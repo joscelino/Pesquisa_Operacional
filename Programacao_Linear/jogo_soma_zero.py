@@ -28,7 +28,6 @@ for j in strategy_B:
     model += v - lpSum(constrains_list) == 0
     constrains_list = []
 
-
 for x in var.values():
     constrains_list.append(x)
     
@@ -37,7 +36,7 @@ model += lpSum(constrains_list) == 1
 # Model solution
 print(model)
 
-status = model.solve()
+status: int = model.solve()
 print(LpStatus[status])
 print(f'Game value: {value(model.objective)}')
 

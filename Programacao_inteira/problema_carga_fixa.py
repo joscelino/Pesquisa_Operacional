@@ -1,19 +1,20 @@
 from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
+from typing import List, Dict
 
 # Problem data
-machines = [0, 1, 2]
+machines: List = [0, 1, 2]
 
-fixed_cost = {0: 25,
-              1: 45,
-              2: 60}
+fixed_cost: Dict = {0: 25,
+                    1: 45,
+                    2: 60}
 
-variable_cost = {0: 4,
-                 1: 7,
-                 2: 12}
+variable_cost: Dict = {0: 4,
+                       1: 7,
+                       2: 12}
 
-availability = {0: 30,
-                1: 60,
-                2: 78}
+availability: Dict = {0: 30,
+                      1: 60,
+                      2: 78}
 
 # Decision variables
 var = LpVariable.dict("X", machines, cat='Integer', lowBound=0)
@@ -36,10 +37,10 @@ for x in var.values():
 model += lpSum(constrains_list) == 75
     
 # Model solution
-status = model.solve()
+status: int = model.solve()
 print(LpStatus[status])
 print(" ")
-print(f'The cost is: {value(model.objective)}')
+print(f'The cost is: {round(value(model.objective), 2)}')
 print(" ")
 
 for i in machines:
