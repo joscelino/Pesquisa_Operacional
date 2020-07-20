@@ -9,7 +9,7 @@ Problemas de pesquisa operacional possuem grande relevancia no ambiente empresar
 
 
 
-# Repository of Application Algorithms in Operations Research
+# Application Algorithms in Operations Research Repository
 
 In this repository several algorithms with solutions of problems in Operational Research were grouped.
 
