@@ -36,14 +36,17 @@ model += lpSum(var_1[x] * loss_plate_1[x] for x in var_1.keys()) + \
          lpSum(var_3[x] * width_dimensions[x] for x in var_3.keys())
 
 # Constrains
-model += lpSum(var_1[x+1] * plate_1[0][x] for x in range(0, 3, 1)) + \
-         lpSum(var_2[x+1] * plate_2[0][x] for x in range(0, 6, 1)) - var_3[1] == required_length[0]
+model += lpSum(var_1[x+1] * plate_1[0][x] for x in range(0, len(width_plate_1), 1)) + \
+         lpSum(var_2[x+1] * plate_2[0][x] for x in range(0, len(width_plate_2), 1)) - \
+         var_3[1] == required_length[0]
 
-model += lpSum(var_1[x+1] * plate_1[1][x] for x in range(0, 3, 1)) + \
-         lpSum(var_2[x+1] * plate_2[1][x] for x in range(0, 6, 1)) - var_3[2] == required_length[1]
+model += lpSum(var_1[x+1] * plate_1[1][x] for x in range(0, len(width_plate_1), 1)) + \
+         lpSum(var_2[x+1] * plate_2[1][x] for x in range(0, len(width_plate_2), 1)) - \
+         var_3[2] == required_length[1]
 
-model += lpSum(var_1[x+1] * plate_1[2][x] for x in range(0, 3, 1)) + \
-         lpSum(var_2[x+1] * plate_2[2][x] for x in range(0, 6, 1)) - var_3[3] == required_length[2]
+model += lpSum(var_1[x+1] * plate_1[2][x] for x in range(0, len(width_plate_1), 1)) + \
+         lpSum(var_2[x+1] * plate_2[2][x] for x in range(0, len(width_plate_2), 1)) - \
+         var_3[3] == required_length[2]
 
 print(model)
 
@@ -65,6 +68,13 @@ for x in var_2.values():
         print(f'{x.name} = {value(x)} ')
     else:
         continue
+
+print('-------------------------------------\n')
+for x in var_3.values():
+    if value(x) != 0:
+        print(f'{x.name} = {value(x)} ')
+    else:
+        print(f'{x.name} = {value(x)} ')
 
 print('-------------------------------------')
 print(f'The {LpStatus[status]} loss is: {round(value(model.objective), 2)}')
