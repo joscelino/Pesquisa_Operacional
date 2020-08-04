@@ -18,8 +18,8 @@ plate_2: List = [[3, 2, 2, 1, 0, 0],
 loss_plate_1: Dict = {1: 0, 2: 0.4, 3: 0.3}
 loss_plate_2: Dict = {1: 0.3, 2: 0.1, 3: 0, 4: 0.5, 5: 0.2, 6: 0.1}
 
-width_plate_1 = [1, 2, 3]
-width_plate_2 = [1, 2, 3, 4, 5, 6]
+width_plate_1: List = [1, 2, 3]
+width_plate_2: List = [1, 2, 3, 4, 5, 6]
 
 required_length: List = [10, 30, 20]
 scraps_k: List = [1, 2, 3]
@@ -63,6 +63,7 @@ for x in var_1.values():
     else:
         continue
 print('-------------------------------------\n')
+
 for x in var_2.values():
     if value(x) != 0:
         print(f'{x.name} = {value(x)} ')
