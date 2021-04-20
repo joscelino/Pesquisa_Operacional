@@ -1,6 +1,7 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
-from typing import List, Dict
+from typing import Dict, List
+
 import numpy as np
+from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem Data
 components: Dict = {0: 'pure_gas', 1: 'octane', 2: 'additive'}

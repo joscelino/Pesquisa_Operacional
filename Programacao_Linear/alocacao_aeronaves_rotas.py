@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
-from typing import List, Dict
+from typing import Dict, List
+
+from pulp import LpMinimize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 aircraft_type: List = [0, 1, 2]
@@ -41,7 +42,7 @@ status: int = model.solve()
 # Printing results
 print(f" *** Best configuration - {LpStatus[status]} *** ")
 print('-------------------------------------')
-print(f'Profit: ${value(model.objective)}')
+print(f'Cost: ${value(model.objective)}')
 
 for x in var.values():
     print(f'{x} = {value(x)}')

@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
-from typing import List, Dict
+from typing import Dict, List
+
+from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 items: List = ['MS1', 'MS2', 'MS3', 'MS4', 'MS5', 'MS6']

@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
-from typing import List, Dict
+from typing import Dict, List
+
+from pulp import LpMinimize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 cutting_possibilities: Dict = {0: 'plate_1', 1: 'plate_2'}

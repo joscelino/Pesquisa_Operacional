@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
-from typing import List, Dict
+from typing import Dict, List
+
+from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 capital: int = 1000000
@@ -47,28 +48,3 @@ print(f'Profit: ${value(model.objective)}')
 
 for x in var.values():
     print(f'{x} = {value(x)}')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

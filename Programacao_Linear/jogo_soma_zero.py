@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
 from typing import List
+
+from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 #           b1  b2 b3
@@ -43,19 +44,3 @@ print(f'Game value: {value(model.objective)}')
 
 for x in var.values():
     print(f'{x} = {value(x)}')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

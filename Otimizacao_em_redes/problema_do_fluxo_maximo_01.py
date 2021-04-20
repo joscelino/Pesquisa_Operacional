@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
-from typing import List, Dict
+from typing import Dict, List
+
+from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 nodes: List = [0, 1, 2, 3, 4]

@@ -1,6 +1,7 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
 from typing import Dict
+
 import numpy as np
+from pulp import LpMinimize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem Data
 cities: Dict = {0: 'Niteroi', 1: 'Angra', 2: 'Campos', }

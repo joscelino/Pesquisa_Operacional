@@ -1,5 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
-from typing import List, Dict
+from typing import Dict, List
+
+from pulp import LpMinimize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem Data
 feed: List = [0, 1, 2, 3, 4, 5]

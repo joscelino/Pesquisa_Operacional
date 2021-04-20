@@ -1,6 +1,6 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMinimize, value
-from typing import List, Dict
+from typing import Dict, List
 
+from pulp import LpMinimize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 """ Problema retirado do livro: Otimizacao combinatoria e meta-heuristica pag: 20-22"""
 

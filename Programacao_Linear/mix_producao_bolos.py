@@ -1,6 +1,7 @@
-from pulp import LpVariable, LpProblem, lpSum, LpStatus, LpMaximize, value
 from typing import Dict
+
 import numpy as np
+from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem Data
 product: Dict = {0: 'Cream_cake', 1: 'Chocolate_cake'}
