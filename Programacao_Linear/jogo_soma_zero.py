@@ -4,16 +4,18 @@ from pulp import LpMaximize, LpProblem, LpStatus, LpVariable, lpSum, value
 
 # Problem data
 #           b1  b2 b3
-reward: List = [[30, -10, -30],   # Very Hard A
-                [0, -40, 10],     # Average A
-                [-50, 60, 0]]     # Light strategy A
+reward: List = [
+    [30, -10, -30],  # Very Hard A
+    [0, -40, 10],  # Average A
+    [-50, 60, 0],
+]  # Light strategy A
 
 strategy_A: List = [0, 1, 2]
 strategy_B: List = [0, 1, 2]
 
 # Decision variables
 var = LpVariable.dict("A", strategy_A, lowBound=0)
-v = LpVariable('v')
+v = LpVariable("v")
 
 # Model
 model = LpProblem("zero_sum_game", LpMaximize)
@@ -32,7 +34,7 @@ for j in strategy_B:
 
 for x in var.values():
     constrains_list.append(x)
-    
+
 model += lpSum(constrains_list) == 1
 
 # Model solution
@@ -40,7 +42,7 @@ print(model)
 
 status: int = model.solve()
 print(LpStatus[status])
-print(f'Game value: {value(model.objective)}')
+print(f"Game value: {value(model.objective)}")
 
 for x in var.values():
-    print(f'{x} = {value(x)}')
+    print(f"{x} = {value(x)}")
